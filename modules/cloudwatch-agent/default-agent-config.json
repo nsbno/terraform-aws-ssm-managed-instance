@@ -1,0 +1,78 @@
+{
+  "agent": {
+    "metrics_collection_interval": 300,
+    "region": "${AWS_REGION}",
+    "omit_hostname": true,
+    "run_as_user": "root"
+  },
+  "logs": {
+    "logs_collected": {
+      "files": {
+        "collect_list": [
+          {
+            "file_path": "/var/log/messages",
+            "log_group_name": "${LOG_GROUP_NAME}",
+            "log_stream_name": "${INSTANCE_IDENTIFIER}/var/log/messages",
+            "timestamp_format": "%b %-d %H:%M:%S"
+          },
+          {
+            "file_path": "/var/log/amazon/amazon-cloudwatch-agent/amazon-cloudwatch-agent.log",
+            "log_group_name": "${LOG_GROUP_NAME}",
+            "log_stream_name": "${INSTANCE_IDENTIFIER}/var/log/amazon/amazon-cloudwatch-agent/amazon-cloudwatch-agent.log",
+            "timestamp_format": "%Y-%m-%dT%H:%M:%S"
+          },
+          {
+            "file_path": "/var/log/amazon/ssm/amazon-ssm-agent.log",
+            "log_group_name": "${LOG_GROUP_NAME}",
+            "log_stream_name": "${INSTANCE_IDENTIFIER}/var/log/amazon/ssm/amazon-ssm-agent.log",
+            "timestamp_format": "%Y-%m-%d %H:%M:%S"
+          },
+          {
+            "file_path": "/var/log/amazon/ssm/errors.log",
+            "log_group_name": "${LOG_GROUP_NAME}",
+            "log_stream_name": "${INSTANCE_IDENTIFIER}/var/log/amazon/ssm/errors.log",
+            "timestamp_format": "%Y-%m-%d %H:%M:%S"
+          }
+        ]
+      }
+    }
+  },
+  "metrics": {
+    "namespace": "${METRIC_NAMESPACE}",
+    "aggregation_dimensions": [
+      ["InstanceIdentifier"]
+    ],
+    "metrics_collected": {
+      "cpu": {
+        "append_dimensions": {
+          "InstanceIdentifier": "${INSTANCE_IDENTIFIER}"
+        },
+        "measurement": [
+          "cpu_usage_user",
+          "cpu_usage_system"
+        ],
+        "totalcpu": true
+      },
+      "disk": {
+        "append_dimensions": {
+          "InstanceIdentifier": "${INSTANCE_IDENTIFIER}"
+        },
+        "measurement": [
+          "disk_used_percent"
+        ],
+        "resources": [
+          "/"
+        ],
+        "drop_device": true
+      },
+      "mem": {
+        "append_dimensions": {
+          "InstanceIdentifier": "${INSTANCE_IDENTIFIER}"
+        },
+        "measurement": [
+          "mem_used_percent"
+        ]
+      }
+    }
+  }
+}

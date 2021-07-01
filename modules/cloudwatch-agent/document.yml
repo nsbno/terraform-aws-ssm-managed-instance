@@ -1,0 +1,59 @@
+---
+schemaVersion: "2.2"
+description: "Install and/or configure the CloudWatch agent on an SSM-managed instance."
+parameters:
+  install:
+    description: "Whether to install the CloudWatch agent or not."
+    type: String
+    default: "yes"
+    allowedValues:
+      - "yes"
+      - "no"
+  configure:
+    description: "Whether to configure the CloudWatch agent or not."
+    type: String
+    default: "yes"
+    allowedValues:
+      - "yes"
+      - "no"
+mainSteps:
+- action: "aws:configurePackage"
+  name: "InstallCloudWatchAgent"
+  precondition:
+    StringEquals:
+      - "{{ install }}"
+      - "yes"
+  inputs:
+    action: Install
+    installationType: Uninstall and reinstall
+    name: "AmazonCloudWatchAgent"
+    onFailure: exit
+- action: "aws:runShellScript"
+  name: "ConfigureCredentialChain"
+  precondition:
+    StringEquals:
+      - "{{ configure }}"
+      - "yes"
+  inputs:
+    timeoutSeconds: 60
+    runCommand:
+      - '#!/usr/bin/env bash'
+      - mkdir -p /root/.aws
+      - if ! grep /root/.aws/config "default"; then printf '[default]\nregion = ${AWS_REGION}\n' >> /root/.aws/config; fi
+      - mkdir -p /opt/aws/amazon-cloudwatch-agent/etc
+      - printf '[credentials]\nshared_credential_profile = "default"\nshared_credential_file = "/root/.aws/credentials"\n' > /opt/aws/amazon-cloudwatch-agent/etc/common-config.toml
+- action: "aws:runDocument"
+  name: "ConfigureCloudWatchAgent"
+  precondition:
+    StringEquals:
+      - "{{ configure }}"
+      - "yes"
+  inputs:
+    documentType: "SSMDocument"
+    documentPath: "AmazonCloudWatch-ManageAgent"
+    documentParameters:
+      action: configure
+      mode: onPremise
+      optionalConfigurationLocation: '${SSM_PARAMETER_NAME}'
+      optionalConfigurationSource: ssm
+      optionalRestart: "yes"

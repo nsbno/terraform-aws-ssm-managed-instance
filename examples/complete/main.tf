@@ -132,7 +132,7 @@ resource "aws_lambda_permission" "this" {
   action        = "lambda:InvokeFunction"
   function_name = module.agent_connectivity.function_name
   principal     = "events.amazonaws.com"
-  source_arn    = aws_cloudwatch_event_rule.agent.arn
+  source_arn    = aws_cloudwatch_event_rule.this.arn
 }
 
 resource "aws_cloudwatch_event_rule" "this" {

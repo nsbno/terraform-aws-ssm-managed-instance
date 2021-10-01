@@ -39,7 +39,7 @@ mainSteps:
     runCommand:
       - '#!/usr/bin/env bash'
       - mkdir -p /root/.aws
-      - if ! grep /root/.aws/config "default"; then printf '[default]\nregion = ${AWS_REGION}\n' >> /root/.aws/config; fi
+      - if ! grep "default" /root/.aws/config; then printf '[default]\nregion = ${AWS_REGION}\n' >> /root/.aws/config; fi
       - mkdir -p /opt/aws/amazon-cloudwatch-agent/etc
       - printf '[credentials]\nshared_credential_profile = "default"\nshared_credential_file = "/root/.aws/credentials"\n' > /opt/aws/amazon-cloudwatch-agent/etc/common-config.toml
 - action: "aws:runDocument"

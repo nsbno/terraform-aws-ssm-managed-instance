@@ -23,8 +23,7 @@ variable "log_group_name" {
 }
 
 variable "instance_identifier" {
-  description = "(Optional) An identifier to use for metric dimensions and log stream names for metrics and logs collected by the CloudWatch agent when using the default JSON configuration. (NOTE: A hardcoded value like `my-instance-name` can be used here if the module is being used to target only a single managed instance.)"
-  default     = "{local_hostname}"
+  description = "An identifier to use for metric dimensions and log stream names for metrics and logs collected by the CloudWatch agent when using the default JSON configuration. (NOTE: A hardcoded value like `my-instance-name` can be used here if the module is being used to target only a single managed instance.)"
 }
 
 variable "metric_namespace" {

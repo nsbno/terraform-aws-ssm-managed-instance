@@ -4,12 +4,12 @@ data "aws_region" "this" {}
 locals {
   current_account_id = data.aws_caller_identity.this.account_id
   current_region     = data.aws_region.this.name
-  metric_namespace   = coalesce(var.metric_namespace, "${var.name_prefix}-cloudwatch-agent")
-  log_group_name     = coalesce(var.log_group_name, "${var.name_prefix}-cloudwatch-agent")
+  metric_namespace   = coalesce(var.metric_namespace, "${var.name_prefix}-${var.instance_identifier}-cloudwatch-agent")
+  log_group_name     = coalesce(var.log_group_name, "${var.name_prefix}-${var.instance_identifier}-cloudwatch-agent")
 }
 
 resource "aws_ssm_document" "this" {
-  name            = "${var.name_prefix}-cloudwatch-agent"
+  name            = "${var.name_prefix}-${var.instance_identifier}-cloudwatch-agent"
   document_type   = "Command"
   document_format = "YAML"
   target_type     = "/"
@@ -22,7 +22,7 @@ resource "aws_ssm_document" "this" {
 
 resource "aws_ssm_association" "this" {
   name             = aws_ssm_document.this.name
-  association_name = "${var.name_prefix}-cloudwatch-agent"
+  association_name = "${var.name_prefix}-${var.instance_identifier}-cloudwatch-agent"
   dynamic "targets" {
     for_each = var.instance_targets
     content {
@@ -39,7 +39,7 @@ resource "aws_cloudwatch_log_group" "this" {
 }
 
 resource "aws_ssm_parameter" "agent_config" {
-  name = "/${var.name_prefix}/managed-instance/cloudwatch-agent-config"
+  name = "/${var.name_prefix}/managed-instance/${var.instance_identifier}/cloudwatch-agent-config"
   type = "String"
   # Create minified JSON
   value = var.custom_agent_config != "" ? var.custom_agent_config : jsonencode(jsondecode(templatefile("${path.module}/default-agent-config.json", {

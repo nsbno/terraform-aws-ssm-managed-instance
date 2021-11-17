@@ -6,7 +6,6 @@ variable "name_prefix" {
 variable "instance_name" {
   description = "(Optional) A name to associate with the managed instance."
   type        = string
-  default     = ""
 }
 
 variable "instance_tags" {
@@ -29,11 +28,6 @@ variable "policy_arns" {
 variable "policy_statements" {
   description = "A list of policy statements to attach to the SSM service role."
   default     = []
-}
-
-variable "registration_limit" {
-  description = "The number of managed instances that can be registered using the SSM activation."
-  default     = 1
 }
 
 variable "tags" {

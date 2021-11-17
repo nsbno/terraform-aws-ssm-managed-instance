@@ -15,7 +15,7 @@ output "activation_code_ssm_parameter_name" {
 }
 
 output "instance_name" {
-  value = local.instance_name
+  value = var.instance_name
 }
 
 output "role_name" {

@@ -14,6 +14,14 @@ output "activation_code_ssm_parameter_name" {
   value = aws_ssm_parameter.ssm_activation_code.name
 }
 
+output "activation_id" {
+  value = aws_ssm_parameter.ssm_activation_id.value
+}
+
+output "activation_code" {
+  value = aws_ssm_parameter.ssm_activation_code.value
+}
+
 output "instance_name" {
   value = var.instance_name
 }

@@ -31,6 +31,7 @@ resource "aws_iam_role_policy" "additional" {
 resource "aws_ssm_activation" "this" {
   name               = var.instance_name
   iam_role           = aws_iam_role.this.id
+  registration_limit = 1
   tags = merge({
     instance-name = var.instance_name
   }, var.tags, var.instance_tags)

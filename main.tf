@@ -5,7 +5,7 @@ locals {
 }
 
 resource "aws_iam_role" "this" {
-  name               = "${var.name_prefix}-ssm-managed-instance"
+  name               = "${var.name_prefix}-ssm-managed-instance-${var.instance_name}"
   description        = "Role used by SSM-managed instances named '${var.instance_name}'"
   assume_role_policy = data.aws_iam_policy_document.ssm_assume.json
   tags               = var.tags
